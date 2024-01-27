@@ -1,6 +1,11 @@
 # safegroup
 Panic-safe drop-in replacement for [x/sync/errgroup](https://pkg.go.dev/golang.org/x/sync/errgroup).
 
+### Installation
+```bash
+go get github.com/kucherenkovova/safegroup@v1.0.0
+```
+
 ### Usage
 
 ```go

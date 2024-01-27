@@ -1,9 +1,11 @@
 # safegroup
+[![Go Reference](https://pkg.go.dev/badge/github.com/kucherenkovova/safegroup.svg)](https://pkg.go.dev/github.com/kucherenkovova/safegroup)
+
 Panic-safe drop-in replacement for [x/sync/errgroup](https://pkg.go.dev/golang.org/x/sync/errgroup).
 
 ### Installation
 ```bash
-go get github.com/kucherenkovova/safegroup@v1.0.0
+go get github.com/kucherenkovova/safegroup@v1.0.1
 ```
 
 ### Usage

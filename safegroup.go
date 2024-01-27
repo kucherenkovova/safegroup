@@ -12,9 +12,12 @@ package safegroup
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"sync"
 )
+
+var ErrPanic = errors.New("panic in goroutine")
 
 type token struct{}
 
@@ -38,7 +41,7 @@ func (g *Group) done() {
 	r := recover()
 	if r != nil {
 		g.errOnce.Do(func() {
-			g.err = fmt.Errorf("safegroup: panic in goroutine: %v", r)
+			g.err = fmt.Errorf("safegroup: %w: %s", ErrPanic, r)
 			if g.cancel != nil {
 				g.cancel(g.err)
 			}

@@ -289,4 +289,7 @@ func TestSafeGroupHandlesPanic(t *testing.T) {
 	if err == nil {
 		t.Fatal("expected error, got nil")
 	}
+	if !errors.Is(err, safegroup.ErrPanic) {
+		t.Fatalf("expected %s, got %s", safegroup.ErrPanic, err)
+	}
 }

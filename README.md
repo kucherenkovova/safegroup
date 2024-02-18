@@ -8,7 +8,7 @@ Don't let your whole server crash because of a single goroutine.
 
 ### Installation
 ```bash
-go get github.com/kucherenkovova/safegroup@v1.0.1
+go get github.com/kucherenkovova/safegroup@v1.0.2
 ```
 
 ### Usage

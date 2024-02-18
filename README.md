@@ -19,7 +19,6 @@ func handleStuff(w http.ResponseWriter, req *http.Request) {
 
 	g.Go(queryDB)
 	g.Go(sendEmail)
-
 	g.Go(func() error {
 		panic("oops, buggy code")
 		return nil

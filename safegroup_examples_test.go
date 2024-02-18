@@ -8,6 +8,7 @@ package safegroup_test
 import (
 	"context"
 	"crypto/md5"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -42,7 +43,7 @@ type result struct {
 // fails or any read operation fails, MD5All returns an error.
 func MD5All(ctx context.Context, root string) (map[string][md5.Size]byte, error) {
 	// ctx is canceled when g.Wait() returns. When this version of MD5All returns
-	// - even in case of error! - we know that all of the goroutines have finished
+	// - even in case of error! - we know that all the goroutines have finished
 	// and the memory they were using can be garbage-collected.
 	g, ctx := safegroup.WithContext(ctx)
 	paths := make(chan string)
@@ -184,4 +185,35 @@ func ExampleGroup_justErrors() {
 	if err := g.Wait(); err == nil {
 		fmt.Println("Successfully fetched all URLs.")
 	}
+}
+
+func notifySupport(err error) {
+	fmt.Println("there is a critical error:", err)
+}
+
+// GoroutinePanic illustrates the use of a Group as a drop-in replacement for errgroup.Group.
+// If any of the goroutines panics, the error is returned by g.Wait() and the rest of the goroutines are canceled.
+// The service remains operational. You can use errors.Is(err, safegroup.ErrPanic) to check if the error is a panic
+// and react accordingly.
+func ExampleGroup_goroutinePanic() {
+	lookup := []string{"a", "b", "c"}
+	g := &safegroup.Group{}
+	for i := 0; i < 5; i++ {
+		i := i
+		g.Go(func() error {
+			log.Println("working with ", lookup[i])
+			return nil
+		})
+	}
+
+	if err := g.Wait(); err != nil {
+		if errors.Is(err, safegroup.ErrPanic) {
+			notifySupport(err)
+			log.Println("panic occurred, but the service is still running")
+		}
+		log.Println(err)
+		return
+	}
+
+	log.Println("all goroutines finished successfully")
 }
